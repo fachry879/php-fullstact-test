@@ -17,24 +17,8 @@ class ClientResource extends JsonResource
     //     return parent::toArray($request);
     // }
 
-    //define properti
-    public $status;
-    public $message;
-    public $resource;
-
-    public function __construct($status, $message, $resource)
-    {
-        parent::__construct($resource);
-        $this->status  = $status;
-        $this->message = $message;
-    }
-
     public function toArray($request)
     {
-        return [
-            'success'   => $this->status,
-            'message'   => $this->message,
-            'data'      => $this->resource
-        ];
+        return $this->resource;
     }
 }
