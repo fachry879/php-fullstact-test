@@ -138,4 +138,17 @@ class ClientController extends Controller
             'message' => 'Data Client has been updated !',
         ]);
     }
+
+    public function destroy(Client $client)
+    {
+
+        Storage::delete('Client Logo/' . $client->client_logo);
+
+        $client->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data Client has been deleted !',
+        ]);
+    }
 }
