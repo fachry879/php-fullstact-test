@@ -62,4 +62,15 @@ class ClientController extends Controller
             'message' => 'Client added successful',
         ]);
     }
+
+    public function show(Client $client)
+    {
+        $client = Client::where('id', $client->id)->first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => new ClientResource($client),
+            'message' => 'Success get data Client',
+        ]);
+    }
 }
