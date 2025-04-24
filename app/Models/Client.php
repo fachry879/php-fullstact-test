@@ -22,11 +22,4 @@ class Client extends Model
         'phone_number',
         'city',
     ];
-
-    protected function image(): Attribute
-    {
-        return Attribute::make(
-            get: fn($image) => url('/storage/products/' . $image),
-        );
-    }
 }

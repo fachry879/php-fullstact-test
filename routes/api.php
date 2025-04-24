@@ -10,4 +10,5 @@ use App\Http\Controllers\API\ClientController;
 
 Route::prefix('client')->group(function () {
     Route::get('/list_client', [ClientController::class, 'index']);
+    Route::post('/store_client', [ClientController::class, 'store']);
 });
