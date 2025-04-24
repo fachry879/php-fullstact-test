@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Http\Resources\ClientResource;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
 {
@@ -71,6 +72,70 @@ class ClientController extends Controller
             'status' => 'success',
             'data' => new ClientResource($client),
             'message' => 'Success get data Client',
+        ]);
+    }
+
+    public function update(Request $request, Client $client)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'name'          => 'required',
+            'slug'          => 'required',
+            'is_project'    => 'required',
+            'self_capture'  => 'required|max:1',
+            'client_prefix' => 'required|max:4',
+            'client_logo'   => 'required|image|max:2048',
+            'phone_number'  => 'numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'data' => $validator->errors(),
+                'message' => 'Validation Error',
+            ]);
+        }
+
+        $cek_img = $request->hasFile('client_logo');
+
+        if ($cek_img) {
+
+            //upload image
+            $client_logo = $request->file('client_logo');
+            $client_logo->storeAs('Client Logo', $client_logo->hashName());
+
+            //delete old image
+            Storage::delete('Client Logo/' . $client->client_logo);
+
+            $client->update([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'is_project' => $request->is_project,
+                'self_capture' => $request->self_capture,
+                'client_prefix' => $request->client_prefix,
+                'client_logo' => $client_logo->hashName(),
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'city' => $request->city,
+            ]);
+        } else {
+            $client->update([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'is_project' => $request->is_project,
+                'self_capture' => $request->self_capture,
+                'client_prefix' => $request->client_prefix,
+                // 'client_logo' => $client_logo->hashName(),
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'city' => $request->city,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => new ClientResource($client),
+            'message' => 'Data Client has been updated !',
         ]);
     }
 }
